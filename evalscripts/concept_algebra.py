@@ -9,7 +9,7 @@ import os
 def generate_images(model_name, prompts_path, concepts_to_project, save_path, device='cuda:0', guidance_scale = 7.5, image_size=512, ddim_steps=100, num_samples=10, from_case=0, till_case=1000000):
     
     # 1. Load the autoencoder model which will be used to decode the latents into image space.
-    vae = AutoencoderKL.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="vae")
+    vae = AutoencoderKL.from_pretrained("stabilityai/stable-diffusion-2-1", subfolder="vae")
 
     # 2. Load the tokenizer and text encoder to tokenize and encode the text.
     tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-large-patch14")
@@ -17,7 +17,7 @@ def generate_images(model_name, prompts_path, concepts_to_project, save_path, de
 
     # 3. The UNet model for generating the latents.
 #     name = 'compvis-word_VanGogh-method_xattn-sg_3-ng_1-iter_1000-lr_1e-05'
-    unet = UNet2DConditionModel.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="unet")
+    unet = UNet2DConditionModel.from_pretrained("stabilityai/stable-diffusion-2-1", subfolder="unet")
     if model_name != 'original':
         model_path = f'models/{model_name}'
         unet.load_state_dict(torch.load(model_path))

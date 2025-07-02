@@ -9,7 +9,7 @@ from sld import SLDPipeline
 import os
 def generate_SLD(sld_concept, sld_type,  prompts_path, save_path, device='cuda:0', guidance_scale = 7.5, image_size=512, ddim_steps=100, num_samples=5, from_case=0):
     
-    pipe = SLDPipeline.from_pretrained("CompVis/stable-diffusion-v1-4").to(device)
+    pipe = SLDPipeline.from_pretrained("stabilityai/stable-diffusion-2-1").to(device)
     
     gen = torch.Generator(device=device)
     if sld_concept is not None:

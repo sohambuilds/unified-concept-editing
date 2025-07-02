@@ -49,7 +49,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser(
                     prog = 'generateImages',
                     description = 'Generate Images using Diffusers Code')
-    parser.add_argument('--model_id', help='hf repo id for the model you want to test', type=str, required=False, default='CompVis/stable-diffusion-v1-4')
+    parser.add_argument('--model_id', help='hf repo id for the model you want to test', type=str, required=False, default='stabilityai/stable-diffusion-2-1')
     parser.add_argument('--uce_model_path', help='path for uce model', type=str, required=False, default=None)
     parser.add_argument('--prompts_path', help='path to csv file with prompts', type=str, required=True)
     parser.add_argument('--save_path', help='folder where to save images', type=str, required=False, default='../uce_results/')

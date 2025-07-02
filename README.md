@@ -17,7 +17,7 @@ Specifically, we demonstrate scalable simultaneous debiasing, style erasure, and
 
 ## Installation Guide
 
-The code base is based on the `diffusers` package. To get started:
+The code base is based on the `diffusers` package and supports multiple Stable Diffusion variants. To get started:
 ```
 git clone https://github.com/rohitgandikota/unified-concept-editing.git
 cd unified-concept-editing
@@ -25,15 +25,25 @@ mkdir models
 pip install -r requirements.txt
 ```
 
+**Supported Models:**
+- **SD 2.1** (default): `stabilityai/stable-diffusion-2-1` - Higher quality 768x768 outputs with improved text understanding
+- **SD 1.4**: `CompVis/stable-diffusion-v1-4` - Legacy 512x512 model for compatibility
+- **SDXL**: `stabilityai/stable-diffusion-xl-base-1.0` - Latest 1024x1024 high-resolution model
+- **FLUX**: `black-forest-labs/FLUX.1-schnell` - Experimental state-of-the-art model
+
 ## Training Guide
 
 After installation, follow these instructions to train a custom UCE model:
-### SDv1.4 and SDXL
-To erase concepts (e.g. "Van Gogh" and "Picasso" simultaneously) for SDv1.4
+### Stable Diffusion Models
+To erase concepts (e.g. "Van Gogh" and "Picasso" simultaneously) for **SD 2.1** (default, higher quality 768x768):
 ```python
-python trainscripts/uce_sd_erase.py --model_id 'CompVis/stable-diffusion-v1-4' --edit_concepts 'Van Gogh; Picasso' --guided_concept 'art' --preserve_concepts 'Monet; Rembrandt; Warhol' --device 'cuda:0' --concept_type 'art' --exp_name 'vangogh_uce_sd'
+python trainscripts/uce_sd_erase.py --edit_concepts 'Van Gogh; Picasso' --guided_concept 'art' --preserve_concepts 'Monet; Rembrandt; Warhol' --device 'cuda:0' --concept_type 'art' --exp_name 'vangogh_uce_sd21'
 ```
-To erase concepts (e.g. "Van Gogh" and "Picasso" simultaneously) for SDXL
+To erase concepts for **SD 1.4** (legacy 512x512):
+```python
+python trainscripts/uce_sd_erase.py --model_id 'CompVis/stable-diffusion-v1-4' --edit_concepts 'Van Gogh; Picasso' --guided_concept 'art' --preserve_concepts 'Monet; Rembrandt; Warhol' --device 'cuda:0' --concept_type 'art' --exp_name 'vangogh_uce_sd14'
+```
+To erase concepts for **SDXL** (1024x1024):
 ```python
 python trainscripts/uce_sd_erase.py --model_id 'stabilityai/stable-diffusion-xl-base-1.0' --edit_concepts 'Van Gogh, Picasso' --guided_concept 'art' --preserve_concepts 'Monet; Rembrandt; Warhol' --device 'cuda:0' --concept_type 'art' --exp_name 'vangogh_uce_sdxl'
 ```
@@ -49,10 +59,13 @@ python trainscripts/uce_hidream_erase.py --edit_concepts 'person;man;woman' --pr
 ```
 
 ### Moderating
-### SDv1.4 and SDXL
-To moderate concepts (e.g. "violence, nudity, harm")
+To moderate concepts (e.g. "violence, nudity, harm") with **SD 2.1** (default):
 ```python
-python trainscripts/uce_sd_erase.py --model_id 'CompVis/stable-diffusion-v1-4' --edit_concepts 'violence; nudity; harm' --device 'cuda:0' --concept_type 'unsafe' --exp_name 'i2p'
+python trainscripts/uce_sd_erase.py --edit_concepts 'violence; nudity; harm' --device 'cuda:0' --concept_type 'unsafe' --exp_name 'i2p_sd21'
+```
+To moderate concepts with **SD 1.4**:
+```python
+python trainscripts/uce_sd_erase.py --model_id 'CompVis/stable-diffusion-v1-4' --edit_concepts 'violence; nudity; harm' --device 'cuda:0' --concept_type 'unsafe' --exp_name 'i2p_sd14'
 ```
 
 ### FLUX
@@ -62,15 +75,26 @@ python trainscripts/uce_flux_erase.py --model_id 'black-forest-labs/FLUX.1-schne
 ```
 
 ### Debiasing
-To debias concepts (e.g. "Doctor, Nurse, Carpenter") against attributes (e.g. "Male, Female") equally in 0.5 ratio each
+To debias concepts (e.g. "Doctor, Nurse, Carpenter") against attributes (e.g. "Male, Female") equally in 0.5 ratio each with **SD 2.1** (default):
+```python
+python trainscripts/uce_sd_debias.py --edit_concepts 'Doctor; Nurse; Carpenter' --debias_concepts 'male; female' --device 'cuda:0' --desired_ratios 0.5 0.5 --exp_name 'debias_sd21'
+```
+To debias with **SDXL**:
 ```python
 python trainscripts/uce_sd_debias.py --edit_concepts 'Doctor; Nurse; Carpenter' --debias_concepts 'male; female' --device 'cuda:0' --desired_ratios 0.5 0.5 --exp_name 'debias_sdxl' --model_id 'stabilityai/stable-diffusion-xl-base-1.0'
 ```
 
 ## Generation Images
 To use `eval-scripts/generate-images.py` you would need a CSV file with columns `prompt`, `evaluation_seed`, and `case_number`. (Sample data in `data/`)
+
+**With SD 2.1** (default, higher quality):
 ```python
-python evalscripts/generate-images.py --model_id 'CompVis/stable-diffusion-v1-4' --uce_model_path 'uce_models/vangogh.safetensors' --prompts_path 'data/vangogh_prompts.csv' --save_path 'uce_results' --exp_name 'vangogh_uce' --num_images_per_prompt 1 --num_inference_steps 50 --device 'cuda:0'
+python evalscripts/generate-images.py --uce_model_path 'uce_models/vangogh.safetensors' --prompts_path 'data/vangogh_prompts.csv' --save_path 'uce_results' --exp_name 'vangogh_uce_sd21' --num_images_per_prompt 1 --num_inference_steps 50 --device 'cuda:0'
+```
+
+**With SD 1.4** (legacy):
+```python
+python evalscripts/generate-images.py --model_id 'CompVis/stable-diffusion-v1-4' --uce_model_path 'uce_models/vangogh.safetensors' --prompts_path 'data/vangogh_prompts.csv' --save_path 'uce_results' --exp_name 'vangogh_uce_sd14' --num_images_per_prompt 1 --num_inference_steps 50 --device 'cuda:0'
 ```
 
 ## Citing our work

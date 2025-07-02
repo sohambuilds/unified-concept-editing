@@ -99,7 +99,7 @@ if __name__ == '__main__':
     parser.add_argument('--preserve_concepts', help='Concepts to preserve seperated by ;', type=str, default=None)
     parser.add_argument('--concept_type', help='type of concept being erased', choices=['art', 'object'], type=str, required=True)
     
-    parser.add_argument('--model_id', help='Model to run UCE on', type=str, default="CompVis/stable-diffusion-v1-4",)
+    parser.add_argument('--model_id', help='Model to run UCE on', type=str, default="stabilityai/stable-diffusion-2-1",)
     parser.add_argument('--device', help='cuda devices to train on', type=str, required=False, default='cuda:0')
     
     parser.add_argument('--erase_scale', help='scale to erase concepts', type=float, required=False, default=1)
