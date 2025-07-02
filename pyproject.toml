@@ -1,0 +1,23 @@
+[project]
+name = "unified-concept-editing"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "diffusers==0.33.0",
+    "dreamsim==0.2.1",
+    "imageio==2.33.0",
+    "lpips==0.1.4",
+    "matplotlib==3.10.1",
+    "nudenet==3.4.2",
+    "numpy>=2.0.0,<3.0.0",
+    "pandas==2.2.3",
+    "pillow==11.2.1",
+    "requests==2.32.3",
+    "safetensors==0.5.3",
+    "torch>=2.5.0",
+    "torchvision>=0.20.0",
+    "tqdm==4.66.5",
+    "transformers==4.48.0",
+]
